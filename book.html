@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>replit</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+
+<body>
+  <header class="container">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="index.html">Bookish</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+          aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+          <div class="navbar-nav">
+            <a class="nav-link " aria-current="page" href="index.html">Home</a>
+            <a class="nav-link active" href="#book">Books</a>
+            <a class="nav-link" href="facts.html">Facts</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main id="book" class="container">
+    <h1>Add a Book</h1>
+
+    <form id="bookForm">
+      <label for="titleInput">Title:</label><br>
+      <input id="titleInput" class="form-control" />
+      <br><br>
+
+      <label for="authorInput">Author:</label><br>
+      <input id="authorInput" class="form-control" />
+      <br><br>
+
+      <label>Genre:</label><br>
+      <select id="selectGenre" class="form-select">
+        <option value="Classic">Classic</option>
+        <option value="Science Fiction">Science Fiction</option>
+        <option value="Music">Music</option>
+        <option value="Magazine">Magazine</option>
+        <option value="Technology">Technology</option>
+      </select>
+      <br><br>
+
+      <label>Media Type:</label><br>
+      <select id="selectMedia" class="form-select">
+        <option value="Book">Book</option>
+        <option value="DVD">DVD</option>
+        <option value="Magazine">Magazine</option>
+        <option value="Digital Book">Digital Book</option>
+      </select>
+      <br><br>
+
+      <button class="btn btn-primary" type="submit">Add Book</button>
+    </form>
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="w-50 m-2">
+        <label>Filter By Genre:</label>
+        <select id="filterGenre" class="form-select col-md-4">
+          <option value="All Books">All Books</option>
+          <option value="Classic">Classic</option>
+          <option value="Science Fiction">Science Fiction</option>
+          <option value="Music">Music</option>
+          <option value="Magazine">Magazine</option>
+          <option value="Technology">Technology</option>
+        </select>
+      </div>
+
+      <div class="w-50 m-2">
+        <label>Filter By Media Type:</label>
+        <select id="filterMediaType" class="form-select col-md-4">
+          <option value="All Media">All</option>
+          <option value="Book">Book</option>
+          <option value="DVD">DVD</option>
+          <option value="Magazine">Magazine</option>
+          <option value="Digital Book">Digital Book</option>
+        </select>
+      </div>
+    </div>
+
+    <ul class="my-4" id="bookList">
+
+    </ul>
+
+  </main>
+  <footer class="text-center text-white bg-dark py-4">
+    <p>&copy; 2024 Bookish. All right reserved</p>
+  </footer>
+
+  <script>
+    let libraryData = [
+      {
+        id: 1,
+        title: "The Great Gatsby",
+        author: "F. Scott Fitzgerald",
+        ISBN: "978-0-7432-7356-5",
+        genre: "Classic",
+        publicationYear: 1925,
+        mediaType: "Book",
+        availabilityStatus: "In Stock",
+        location: "Fiction Section, Shelf A",
+        condition: "Good"
+      },
+      {
+        id: 2,
+        title: "The Hitchhiker's Guide to the Galaxy",
+        author: "Douglas Adams",
+        ISBN: "978-0-345-39180-3",
+        genre: "Science Fiction",
+        publicationYear: 1979,
+        mediaType: "Book",
+        availabilityStatus: "Checked Out",
+        location: "Science Fiction Section, Shelf B",
+        condition: "New"
+      },
+      {
+        id: 3,
+        title: "The Beatles Anthology",
+        author: "The Beatles",
+        ISBN: "978-0811826846",
+        genre: "Music",
+        publicationYear: 2000,
+        mediaType: "DVD",
+        availabilityStatus: "On Hold",
+        location: "Music Section, Shelf C",
+        condition: "Fair"
+      },
+      {
+        id: 4,
+        title: "National Geographic",
+        author: "Various",
+        ISBN: "NG-MAG-2023-001",
+        genre: "Magazine",
+        publicationYear: 2023,
+        mediaType: "Magazine",
+        availabilityStatus: "In Stock",
+        location: "Periodicals Section, Shelf D",
+        condition: "Good"
+      },
+      {
+        id: 5,
+        title: "Database Management Essentials",
+        author: "Abraham Silberschatz",
+        ISBN: "978-0077079611",
+        genre: "Technology",
+        publicationYear: 2019,
+        mediaType: "Digital Book",
+        availabilityStatus: "In Stock",
+        location: "Technology Section, Shelf E",
+        condition: "New"
+      },
+    ];
+
+    const bookForm = document.querySelector("#bookForm")
+    const bookList = document.querySelector("#bookList")
+
+    function createList(filteredGenre) {
+      bookList.innerHTML = " "
+      for (let i = 0; i < filteredGenre.length; i++) {
+        const listElement = document.createElement('li')
+
+        listElement.className = "list-group-item d-flex justify-content-between align-items-start "
+
+        const card = document.createElement('div')
+        card.className = "ms-2 me-auto"
+
+        const heading = document.createElement('h2')
+        heading.textContent = `${filteredGenre[i].title}`
+
+        const author = document.createElement('p')
+        author.textContent = `Author: ${filteredGenre[i].author}`
+
+        const genre = document.createElement('p')
+        genre.textContent = `Genre: ${filteredGenre[i].genre}, Media Type: ${filteredGenre[i].mediaType}`
+
+        const link = document.createElement('a')
+
+        link.textContent = "Details"
+
+        link.className = 'btn btn-primary'
+
+        link.href = `details.html?id=${filteredGenre[i].id}`
+
+        card.appendChild(heading)
+        card.appendChild(author)
+        card.appendChild(genre)
+        card.appendChild(link)
+
+        listElement.appendChild(card)
+
+        bookList.appendChild(listElement)
+      }
+    }
+
+    bookForm.addEventListener('submit', function (e) {
+      e.preventDefault()
+      const titleInput = document.querySelector('#titleInput')
+      const authorInput = document.querySelector('#authorInput')
+      const selectGenre = document.querySelector('#selectGenre')
+      const selectMedia = document.querySelector('#selectMedia')
+
+      if (titleInput && authorInput && selectGenre && selectMedia) {
+        const newBookId = libraryData.length + 1
+        const newBook = {
+          id: newBookId,
+          title: titleInput.value,
+          author: authorInput.value,
+          genre: selectGenre.value,
+          mediaType: selectMedia.value
+        }
+
+        libraryData.push(newBook)
+        createList(libraryData)
+
+      }
+
+
+
+
+
+    })
+
+    const filterGenre = document.querySelector('#filterGenre')
+
+    filterGenre.addEventListener('change', applyFilterGenre)
+
+    function applyFilterGenre() {
+      const selectedGenre = filterGenre.value
+      const filteredGenre = []
+
+      if (selectedGenre !== "All Books") {
+        for (let i = 0; i < libraryData.length; i++) {
+          if (selectedGenre === libraryData[i].genre) {
+            filteredGenre.push(libraryData[i])
+          }
+        }
+        createList(filteredGenre)
+      } else {
+        createList(libraryData)
+      }
+    }
+
+    const filterMediaType = document.querySelector("#filterMediaType")
+
+    filterMediaType.addEventListener("change", applyFilterMediaType)
+
+    function applyFilterMediaType() {
+      const selectedMediaType = filterMediaType.value
+      const filteredMediaType = []
+
+      if (selectedMediaType !== "All Media") {
+        for (let i = 0; i < libraryData.length; i++) {
+          if (selectedMediaType === libraryData[i].mediaType) {
+            filteredMediaType.push(libraryData[i])
+          }
+        }
+        createList(filteredMediaType)
+      } else {
+        createList(libraryData)
+      }
+    }
+
+
+
+
+
+    createList(libraryData)
+
+
+
+
+
+
+
+
+
+
+
+  </script>
+
+</body>
+
+</html>
